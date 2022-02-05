@@ -1,5 +1,6 @@
 (ns dreamloom.handler
   (:require [dreamloom.frzventory :as f]
+            [dreamloom.renderer :as rnd]
             [clojure.data.json :as json]
             [compojure.core :refer [defroutes GET POST PUT DELETE context]]
             [compojure.route :as route]
@@ -45,6 +46,14 @@
     (fn [_]
       {:status 404 :headers {"content-type" "application/json"} :body {}})))
 
+(defroutes selmer-routes
+  (GET "/list" []
+    {:status 200
+     :body (rnd/list-categories)})
+  (GET "/category/:category" [category]
+    {:status 200
+     :body (rnd/category->items category)}))
+
 (defroutes all
   "Primary routes for the webserver."
   (GET "/" [] {}
@@ -52,6 +61,7 @@
                  "Content-Type"
                  "text/html; charset=UTF-8"))
   api-routes
+  selmer-routes
   (route/resources "/")
   (route/not-found "<h1>Page not Found!</h1>"))
 

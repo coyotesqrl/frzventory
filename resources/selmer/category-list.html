@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ctg}}</title>
+  <script>
+    function execVerb(verb, url) {
+      const xhr = new XMLHttpRequest();
+      xhr.open(verb, url);
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          console.log(xhr.responseText);
+        }};
+
+      xhr.send();
+    }
+
+    function incItem(category, item) {
+      execVerb('PUT', '/v1/'.concat(category, '/', item, '/add'));
+    }
+
+    function decItem(category, item) {
+      execVerb('DELETE', '/v1/'.concat(category, '/', item, '/remove'));
+    }
+
+    function save() {
+      execVerb('POST', '/v1/save');
+      location.reload();
+    }
+  </script>
+</head>
+<body>
+
+<table>
+  <thead>
+  <tr>
+    <th>Item</th>
+    <th>Count</th>
+    <th>Add</th>
+    <th>Remove</th>
+  </tr>
+  </thead>
+  {% for item in items %}
+  <tr>
+    <td>{{item.name}}</td>
+    <td>{{item.count}}</td>
+    <td><button onclick="incItem('{{ctg}}', '{{item.name}}')">Add 1</button></td>
+    <td><button onclick="decItem('{{ctg}}', '{{item.name}}')">Remove 1</button></td>
+  </tr>
+  {% endfor %}
+</table>
+
+<button onclick="save()">Save</button>
+
+</body>
+</html>

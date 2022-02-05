@@ -7,6 +7,3 @@
 
 (defn category->items [ctg]
   (sp/render-file "selmer/category-list.html" {:ctg ctg :items (f/get-category ctg)}))
-
-(comment
-  (f/get-category "beef"))

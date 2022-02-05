@@ -4,7 +4,6 @@
             [clojure.data.json :as json]
             [compojure.core :refer [defroutes GET POST PUT DELETE context]]
             [compojure.route :as route]
-            [ring.util.response :as resp]
             [ring.adapter.jetty :as jt])
   (:import (org.eclipse.jetty.server Server)))
 
@@ -17,6 +16,14 @@
     {:status  200
      :headers {"content-type" "application/json"}
      :body    (json/write-str (f/get-category category))})
+  (PUT "/:category/add" [category]
+    {:status 200
+     :headers {"content-type" "application/json"}
+     :body (json/write-str (f/add-empty-category category))})
+  (DELETE "/:category/delete-empty" [category]
+    {:status  200
+     :headers {"content-type" "application/json"}
+     :body    (json/write-str (f/remove-empty-category category))})
   (PUT "/:category/:item/add" [category item]
     {:status 200
      :headers {"content-type" "application/json"}
@@ -47,7 +54,7 @@
       {:status 404 :headers {"content-type" "application/json"} :body {}})))
 
 (defroutes selmer-routes
-  (GET "/list" []
+  (GET "/" []
     {:status 200
      :body (rnd/list-categories)})
   (GET "/category/:category" [category]
@@ -56,10 +63,6 @@
 
 (defroutes all
   "Primary routes for the webserver."
-  (GET "/" [] {}
-    (resp/header (resp/resource-response "index.html" {:root "public"})
-                 "Content-Type"
-                 "text/html; charset=UTF-8"))
   api-routes
   selmer-routes
   (route/resources "/")

@@ -2,14 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Freezer Categories</title>
+  <title>Freezer Inventory</title>
+  <script src="/js/common.js"></script>
 </head>
 <body>
-<h1>Freezer Categories</h1>
-<ul>
+<h1>Freezer Inventory</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Category</th>
+    <th>Count</th>
+    <th>Delete</th>
+  </tr>
+  </thead>
   {% for item in items %}
-  <li><a href="http://localhost:8080/category/{{item|name}}">{{item|name}}</a></li>
+  <tr>
+    <td><a href="http://localhost:8080/category/{{item.name|name}}">{{item.name|name}}</a></td>
+    <td style="text-align:right">{% if 0 < item.count %}{{item.count}}{% endif %}</td>
+    <td>
+      {% if 0 = item.count %}
+        <button onclick="removeEmptyCategory('{{item.name|name}}')">Remove Empty Category</button>
+      {% endif %}
+    </td>
+  </tr>
   {% endfor %}
-</ul>
+</table>
+<br/>
+<label>New Category <input id="newCgy"></label>
+<button onclick="addEmptyCategory(getElementById('newCgy').value)">Add New Category</button>
+
 </body>
 </html>

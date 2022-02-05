@@ -26,10 +26,13 @@
    "Saved"))
 
 (defn list-categories []
-  (sort (keys @freezer)))
+  (->> (for [[k v] @freezer
+             :let [v (apply + (map :count v))]]
+         {:name k :count v})
+       (sort-by :name)))
 
 (defn get-category [ctg]
-  ((keyword ctg) @freezer))
+  (sort-by :name ((keyword ctg) @freezer)))
 
 (defn- update-item-count [name n v]
   (let [{item 'true items 'false} (group-by #(= (:name %) name) v)
@@ -38,6 +41,15 @@
     (if (< 0 (:count item))
       (conj items item)
       items)))
+
+(defn add-empty-category [ctg]
+  (swap! freezer assoc (keyword ctg) []))
+
+(defn remove-empty-category [ctg]
+  (let [ctg (keyword ctg)]
+    (if (empty? (ctg @freezer))
+      (swap! freezer dissoc ctg)
+      @freezer)))
 
 (defn add-item
   ([cat name] (add-item cat name 1))
@@ -48,39 +60,3 @@
   ([cat name] (remove-item cat name 1))
   ([cat name n]
    (swap! freezer update (keyword cat) (partial update-item-count name (- n)))))
-
-(comment
-  (load-freezer "data/freezer.edn")
-  (get-category :beef)
-
-  (add-item :beef "ribeye" 3)
-  (add-item :beef "sirloin" 3)
-  (add-item :beef "flank steak")
-  (remove-item :beef "flank steak")
-  (remove-item :beef "sirloin" 2)
-
-  (let [{_ 'true others 'false} (->> (get-category :beef)
-                                     (group-by #(= (:name %) "ribeye")))]
-    (prn others))
-
-  (->> "data/freezer.edn"
-       io/reader
-       (PushbackReader.)
-       edn/read)
-
-  (list-categories)
-  (get-category :beef)
-
-  (add-item :beef "ribeye" 3)
-
-  (save-freezer "data/freezer.edn"))
-
-(defn greet
-  "Callable entry point to the application."
-  [data]
-  (println (str "Hello, " (or (:name data) "World") "!")))
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (greet {:name (first args)}))

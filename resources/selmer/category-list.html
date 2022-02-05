@@ -2,35 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{{ctg}}</title>
-  <script>
-    function execVerb(verb, url) {
-      const xhr = new XMLHttpRequest();
-      xhr.open(verb, url);
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          console.log(xhr.responseText);
-        }};
-
-      xhr.send();
-    }
-
-    function incItem(category, item) {
-      execVerb('PUT', '/v1/'.concat(category, '/', item, '/add'));
-    }
-
-    function decItem(category, item) {
-      execVerb('DELETE', '/v1/'.concat(category, '/', item, '/remove'));
-    }
-
-    function save() {
-      execVerb('POST', '/v1/save');
-      location.reload();
-    }
-  </script>
+  <title>{{ctg|name|title}}</title>
+  <script src="/js/common.js"></script>
 </head>
 <body>
+<h1>{{ctg|name|title}}</h1>
+<button onclick="location.href='/'" class="float-left submit-button" >Home</button>
+<br/>
+<br/>
 
 <table>
   <thead>
@@ -44,14 +23,15 @@
   {% for item in items %}
   <tr>
     <td>{{item.name}}</td>
-    <td>{{item.count}}</td>
+    <td style="text-align:right"Ò>{{item.count}}</td>
     <td><button onclick="incItem('{{ctg}}', '{{item.name}}')">Add 1</button></td>
     <td><button onclick="decItem('{{ctg}}', '{{item.name}}')">Remove 1</button></td>
   </tr>
   {% endfor %}
 </table>
-
-<button onclick="save()">Save</button>
+<br/>
+<label>New Item <input id="newItem"></label>
+<button onclick="incItem('{{ctg}}', getElementById('newItem').value)">Add 1</button>
 
 </body>
 </html>

@@ -1,35 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="settings">
 <head>
   <meta charset="UTF-8">
   <title>Freezer Inventory</title>
+  <link href="https://cdn.jsdelivr.net/npm/beercss@2.0.7/dist/cdn/beer.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/beercss@2.0.7/dist/cdn/beer.min.js"></script>
   <script src="/js/common.js"></script>
 </head>
 <body>
-<h1>Freezer Inventory</h1>
-<table>
-  <thead>
-  <tr>
-    <th>Category</th>
-    <th>Count</th>
-    <th>Delete</th>
-  </tr>
-  </thead>
-  {% for item in items %}
-  <tr>
-    <td><a href="http://localhost:8080/category/{{item.name|name}}">{{item.name|name}}</a></td>
-    <td style="text-align:right">{% if 0 < item.count %}{{item.count}}{% endif %}</td>
-    <td>
-      {% if 0 = item.count %}
-        <button onclick="removeEmptyCategory('{{item.name|name}}')">Remove Empty Category</button>
-      {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
-</table>
-<br/>
-<label>New Category <input id="newCgy"></label>
-<button onclick="addEmptyCategory(getElementById('newCgy').value)">Add New Category</button>
+<div class="container">
+  <h2>Freezer Inventory</h2>
+  <hr/>
 
+  <table class="border large-text">
+    <thead>
+    <tr>
+      <th style="text-align: left">Category</th>
+      <th style="text-align: right">Count</th>
+      <th style="text-align: right">Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    <tr>
+      <td style="text-align: left"><a href="/category/{{item.name|name}}">{{item.name|name}}</a>
+      </td>
+      <td style="text-align: right">{{item.count}}</td>
+      <td style="text-align: right">
+        {% if 0 = item.count %}
+        <button class="none large-text" onclick="removeEmptyCategory('{{item.name|name}}')">Remove Empty Category</button>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <br/>
+  <div class="row no-wrap middle-align divider">
+    <div class="field label border medium">
+      <input id="newCgy" type="text">
+      <label>New Category</label>
+      <script>ui()</script>
+    </div>
+    <button class="large-text" onclick="addEmptyCategory(getElementById('newCgy').value)">Add New Category</button>
+  </div>
+</div>
 </body>
 </html>

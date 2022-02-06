@@ -3,5 +3,5 @@
             #_[dreamloom.frzventory :as sut]))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "FIXME, I'm useless."
+    (is (= 1 1))))

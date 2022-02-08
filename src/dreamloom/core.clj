@@ -61,6 +61,9 @@
   ([cat name n]
    (swap! freezer update (keyword cat) (partial update-item-count name (- n)))))
 
+(defn login []
+  (sp/render-file "selmer/login.html" {}))
+
 (defn frz->list-categories []
   (sp/render-file "selmer/list.html" {:items (list-categories)}))
 

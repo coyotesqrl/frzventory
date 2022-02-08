@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/beercss@2.0.7/dist/cdn/beer.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/beercss@2.0.7/dist/cdn/beer.min.js"
+          type="text/javascript"></script>
+</head>
+<body>
+
+<div class="container">
+  <form id="login_form" method="post" action="/v1/login">
+    <div class="row no-space">
+      <div class="col s3">
+        <div class="field label border medium">
+          <input id=username name=username form="login_form" type="text">
+          <label>Username</label>
+        </div>
+      </div>
+      <div class="col s1">&nbsp;</div>
+      <div class="col s3">
+        <div class="field label border medium">
+          <input id=password name=password form="login_form" type="password">
+          <label>Password</label>
+        </div>
+      </div>
+      <div class="col s1">&nbsp;</div>
+      <div class="col s3">
+        <button class="large-text" form="login_form" type="submit">
+          Login
+        </button>
+      </div>
+    </div>
+  </form>
+  <script>ui()</script>
+</div>
+</body>
+</html>

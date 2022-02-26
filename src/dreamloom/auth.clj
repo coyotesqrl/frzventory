@@ -34,7 +34,7 @@
         p-hash (hash-value password)
         jwt (when (= p-hash (get users (keyword username)))
               (jwt/sign {:user username
-                         :expires-seconds  (t/>> (t/now) (t/of-hours 12))} jwt-secret))]
+                         :expires-seconds  (t/>> (t/now) (t/of-hours 1))} jwt-secret))]
     (assoc-in (response/redirect "/") [:session :jwt] jwt)))
 
 (defn validate [token]

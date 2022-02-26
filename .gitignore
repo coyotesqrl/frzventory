@@ -25,3 +25,6 @@
 /checkouts
 /classes
 /target
+/data/jwt.txt
+/data/salt.txt
+/data/users.edn

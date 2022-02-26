@@ -32,7 +32,7 @@
        (sort-by :name)))
 
 (defn get-category [ctg]
-  (sort-by :name ((keyword ctg) @freezer)))
+  (sort-by :name (get @freezer ctg)))
 
 (defn- update-item-count [name n v]
   (let [{item 'true items 'false} (group-by #(= (:name %) name) v)
@@ -43,23 +43,22 @@
       items)))
 
 (defn add-empty-category [ctg]
-  (swap! freezer assoc (keyword ctg) []))
+  (swap! freezer assoc ctg []))
 
 (defn remove-empty-category [ctg]
-  (let [ctg (keyword ctg)]
-    (if (empty? (ctg @freezer))
-      (swap! freezer dissoc ctg)
-      @freezer)))
+  (if (empty? (get @freezer ctg))
+    (swap! freezer dissoc ctg)
+    @freezer))
 
 (defn add-item
-  ([cat name] (add-item cat name 1))
-  ([cat name n]
-   (swap! freezer update (keyword cat) (partial update-item-count name n))))
+  ([ctg name] (add-item ctg name 1))
+  ([ctg name n]
+   (swap! freezer update ctg (partial update-item-count name n))))
 
 (defn remove-item
-  ([cat name] (remove-item cat name 1))
-  ([cat name n]
-   (swap! freezer update (keyword cat) (partial update-item-count name (- n)))))
+  ([ctg name] (remove-item ctg name 1))
+  ([ctg name n]
+   (swap! freezer update ctg (partial update-item-count name (- n)))))
 
 (defn login []
   (sp/render-file "selmer/login.html" {}))

@@ -2,6 +2,11 @@
   (:require [dreamloom.core :as core]
             [dreamloom.auth :as auth]
             [dreamloom.middleware :as middleware]
+
+            [dreamloom.xtdb]
+
+            [clojure.tools.logging :as log]
+            [integrant.core :as ig]
             [ring.middleware.session :as session]
             [ring.middleware.session.memory :as memory]
             [clojure.data.json :as json]
@@ -11,6 +16,7 @@
   (:import (org.eclipse.jetty.server Server)))
 
 (def session-atom (atom {}))
+(def saver (atom {}))
 
 (defroutes app-route-def
   (GET "/" []
@@ -49,7 +55,7 @@
   (POST "/save" []
     {:status 200
      :headers {"content-type" "application/json"}
-     :body (json/write-str (core/save-freezer))})
+     :body (json/write-str (@saver))})
 
   (route/not-found "<h1><a href=\"/\">go back</a></h1>"))
 
@@ -94,10 +100,15 @@
   selmer-routes
   (route/not-found "<h1>Page not Found!</h1>"))
 
-(defonce server (delay (jt/run-jetty #'all {:port 8080 :join? false})))
+(defmethod ig/init-key ::config
+  [_ {{:keys [port]} :server
+      {:keys [save-fn]} :save-fn}]
+  (reset! saver save-fn)
+  (let [server (delay (jt/run-jetty #'all {:port port :join? false}))]
+    (log/infof "Starting server on port %d" port)
+    (.start ^Server @server)
+    {:server server}))
 
-(defn run-app []
-  (.start ^Server (deref server)))
-
-(defn stop-app []
+(defmethod ig/halt-key! ::config
+  [_ {:keys [server]}]
   (.stop ^Server (deref server)))

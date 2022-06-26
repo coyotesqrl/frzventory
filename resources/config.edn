@@ -1,0 +1,29 @@
+{:dreamloom.frzventory/secrets #include #join [#env HOME "/.dreamloom/frzventory-secrets.edn"]
+
+ :dreamloom.core/config    {:data "data/freezer.edn"}
+
+ :dreamloom.handler/config {:server {:port 8080}
+                            :save-fn #ig/ref :dreamloom.core/config}
+
+ :dreamloom.auth/config    {:salt "data/salt.txt"
+                            :jwt-secret "data/jwt.txt"}
+
+ :dreamloom.xtdb/config    #profile {:default {:xtdb/index-store    {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                                                                :db-dir "data/xtdb/index-store"}}
+                                               :xtdb/document-store {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                                                                :db-dir "data/xtdb/doc-store"}}
+                                               :xtdb/tx-log         {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                                                                :db-dir "data/xtdb/tx-log"}}}
+
+                                     :prod    {:xtdb.jdbc/connection-pool {:dialect {:xtdb/module xtdb.jdbc.mysql/->dialect}
+                                                                           :pool-opts {:maximumPoolSize #or [#env MYSQL_POOL_SIZE 10]}
+                                                                           :db-spec {:host     #ref [:dreamloom.frzventory/secrets :mysql-host]
+                                                                                     :dbname   "frzventory"
+                                                                                     :user     "frzventory"
+                                                                                     :password #ref [:dreamloom.frzventory/secrets :mysql-pass]}}
+                                               :xtdb/index-store          {:kv-store {:xtdb/module xtdb.rocksdb/->kv-store
+                                                                                      :db-dir "data/xtdb/index-store"}}
+                                               :xtdb/document-store       {:xtdb/module xtdb.jdbc/->document-store
+                                                                           :connection-pool :xtdb.jdbc/connection-pool}
+                                               :xtdb/tx-log               {:xtdb/module xtdb.jdbc/->tx-log
+                                                                           :connection-pool :xtdb.jdbc/connection-pool}}}}

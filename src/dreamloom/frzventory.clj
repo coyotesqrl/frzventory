@@ -1,8 +1,24 @@
 (ns dreamloom.frzventory
   (:gen-class)
-  (:require [dreamloom.handler :as h]))
+  (:require [clojure.java.io :as io]
+            [aero.core :as aero]
+            [integrant.core :as ig]
+            [dreamloom.handler]
+            [clojure.tools.logging :as log]))
+
+(defmethod aero/reader 'ig/ref
+  [_ _ value]
+  (ig/ref value))
+
+(defmethod ig/init-key ::secrets
+  [_ _])
+
+(defn system-config
+  ([] (system-config nil))
+  ([opts]
+   (aero/read-config (io/resource "config.edn") opts)))
 
 (defn -main
   [& args]
-  (prn args)
-  (h/run-app))
+  (log/info args)
+  (ig/init (system-config {:profile :prod})))

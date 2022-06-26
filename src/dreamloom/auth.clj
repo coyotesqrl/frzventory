@@ -1,10 +1,12 @@
 (ns dreamloom.auth
   (:require [buddy.sign.jwt :as jwt]
             [buddy.hashers :as hash]
+            [integrant.core :as ig]
             [tick.core :as t]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [ring.util.response :as response])
+            [ring.util.response :as response]
+            [clojure.tools.logging :as log])
   (:import (java.io PushbackReader)
            (java.time Instant)))
 
@@ -13,9 +15,8 @@
                 (PushbackReader.)
                 edn/read))
 
-(def jwt-secret (slurp "data/jwt.txt"))
-
-(def hash-salt (slurp "data/salt.txt"))
+(defonce salt (atom nil))
+(defonce jwt-secret (atom nil))
 
 (defn- hash-value
   "Salts and encrypts the provided String password."
@@ -27,18 +28,26 @@
   ;          rather than a re-issue.
   (hash/derive s {:alg        :bcrypt+sha512
                   :iterations 12
-                  :salt       hash-salt}))
+                  :salt       @salt}))
 
 (defn login [{:keys [form-params]}]
   (let [{:strs [username password]} form-params
         p-hash (hash-value password)
         jwt (when (= p-hash (get users (keyword username)))
               (jwt/sign {:user username
-                         :expires-seconds  (t/>> (t/now) (t/of-hours 1))} jwt-secret))]
+                         :expires-seconds  (t/>> (t/now) (t/of-hours 1))} @jwt-secret))]
+    (if jwt
+      (log/infof "Login success by %s" username)
+      (log/warnf "Login failure by %s" username))
     (assoc-in (response/redirect "/") [:session :jwt] jwt)))
 
 (defn validate [token]
   (when token
-    (let [{:keys [user expires-seconds]} (jwt/unsign token jwt-secret)]
+    (let [{:keys [user expires-seconds]} (jwt/unsign token @jwt-secret)]
       (when (< (.getEpochSecond ^Instant (t/now)) expires-seconds)
         {:user user}))))
+
+(defmethod ig/init-key ::config
+  [_ config]
+  (reset! salt (slurp (:salt config)))
+  (reset! jwt-secret (slurp (:jwt-secret config))))

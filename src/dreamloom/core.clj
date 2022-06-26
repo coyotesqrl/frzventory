@@ -1,29 +1,24 @@
 (ns dreamloom.core
-  (:require [selmer.parser :as sp]
+  (:require [integrant.core :as ig]
+            [selmer.parser :as sp]
             [clojure.java.io :as io]
             [clojure.edn :as edn])
   (:import (java.io PushbackReader)))
 
 (def freezer (atom {}))
 
-(def db "data/freezer.edn")
-
 (defn load-freezer
-  ([] (load-freezer db))
-  ([f]
-   (->> f
-        io/reader
-        (PushbackReader.)
-        edn/read
-        (reset! freezer))))
+  [f]
+  (->> f
+       io/reader
+       (PushbackReader.)
+       edn/read
+       (reset! freezer)))
 
-(load-freezer "data/freezer.edn")
-
-(defn save-freezer
-  ([] (save-freezer db))
-  ([f]
-   (spit f @freezer)
-   "Saved"))
+(defn- save-freezer
+  [f]
+  (spit f @freezer)
+  "Saved")
 
 (defn list-categories []
   (->> (for [[k v] @freezer
@@ -68,3 +63,8 @@
 
 (defn category->items [ctg]
   (sp/render-file "selmer/category-list.html" {:ctg ctg :items (get-category ctg)}))
+
+(defmethod ig/init-key ::config
+  [_ {:keys [data]}]
+  (load-freezer data)
+  {:save-fn #(save-freezer data)})

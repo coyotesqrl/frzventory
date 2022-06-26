@@ -28,3 +28,6 @@
 /data/jwt.txt
 /data/salt.txt
 /data/users.edn
+/logs/
+/data/secrets.edn
+/data/xtdb/

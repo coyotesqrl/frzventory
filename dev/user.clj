@@ -1,6 +1,8 @@
 (ns user
   (:require [portal.api :as p]
-            [dreamloom.handler :as h]))
+            [integrant.core :as ig]
+            [dreamloom.handler]
+            [dreamloom.frzventory :as frz]))
 
 (defn portal
   ([] (portal nil))
@@ -8,6 +10,10 @@
    (add-tap #'portal.api/submit)
    (p/open {:launcher l})))
 
-(defn run-app [] (h/run-app))
+(def system (atom nil))
 
-(defn stop-app [] (h/stop-app))
+(defn init []
+  (reset! system (ig/init (frz/system-config))))
+
+(defn halt []
+  (ig/halt! @system))

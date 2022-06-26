@@ -4,12 +4,13 @@
             [clojure.tools.logging :as log])
   (:import (java.io Closeable)))
 
+(defonce node (atom nil))
+
 (defmethod ig/init-key ::config
   [_ config]
   (log/info "Starting XTDB node")
-  (let [node (xt/start-node config)]
-    node))
+  (reset! node (xt/start-node config)))
 
 (defmethod ig/halt-key! ::config
-  [_ ^Closeable node]
-  (.close node))
+  [_ _]
+  (swap! node #(.close ^Closeable %)))

@@ -3,6 +3,7 @@
   (:require [clojure.java.io :as io]
             [aero.core :as aero]
             [integrant.core :as ig]
+            [dreamloom.migrate :as migrate]
             [dreamloom.handler]
             [clojure.tools.logging :as log]))
 
@@ -18,7 +19,9 @@
   ([opts]
    (aero/read-config (io/resource "config.edn") opts)))
 
+;; TODO cleaner command line passing
 (defn -main
   [& args]
   (log/info args)
-  (ig/init (system-config {:profile :prod})))
+  (ig/init (system-config {:profile (or (keyword (first args)) :prod)}))
+  (migrate/run-migrations!))

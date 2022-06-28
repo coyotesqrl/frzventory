@@ -1,8 +1,17 @@
 (ns dreamloom.xtdb
   (:require [xtdb.api :as xt]
+            [xtdb.query :as xq]
             [integrant.core :as ig]
             [clojure.tools.logging :as log])
   (:import (java.io Closeable)))
+
+(defmethod xq/aggregate 'ignore-blanks [_]
+  (fn aggregate-count
+    (^long [] 0)
+    (^long [^long acc] acc)
+    (^long [^long acc {:keys [item]}] (if (= :blank item)
+                                        acc
+                                        (inc acc)))))
 
 (defonce node (atom nil))
 

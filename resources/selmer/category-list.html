@@ -15,7 +15,7 @@
   <br/>
   <br/>
 
-  <table class="border large-text">
+  <table class="border large-text" role="presentation">
     <thead>
     <tr>
       <th style="text-align: left">Item</th>
@@ -25,12 +25,12 @@
     </tr>
     </thead>
     <tbody>
-    {% for item in items %}
+    {% for item-name, item-count in items %}
     <tr>
-      <td style="text-align: left">{{item.name}}</td>
-      <td style="text-align: right">{{item.count}}</td>
-      <td style="text-align: right"><button class="none large-text" onclick="incItem('{{ctg}}', '{{item.name}}')">Add 1</button></td>
-      <td style="text-align: right"><button class="none large-text" onclick="decItem('{{ctg}}', '{{item.name}}')">Remove 1</button></td>
+      <td style="text-align: left">{{item-name}}</td>
+      <td style="text-align: right">{{item-count}}</td>
+      <td style="text-align: right"><button class="none large-text" onclick="incItem('{{ctg}}', '{{item-name}}')">Add 1</button></td>
+      <td style="text-align: right"><button class="none large-text" onclick="decItem('{{ctg}}', '{{item-name}}')">Remove 1</button></td>
     </tr>
     {% endfor %}
     </tbody>

@@ -3,7 +3,8 @@
             [integrant.core :as ig]
             [tick.core :as t]
             [dreamloom.handler]
-            [dreamloom.frzventory :as frz]))
+            [dreamloom.frzventory :as frz]
+            [dreamloom.migrate :as migrate]))
 
 (def migration-format (t/formatter "yyyyMMddHHmmss"))
 
@@ -24,7 +25,8 @@
 (def system (atom nil))
 
 (defn init []
-  (reset! system (ig/init (frz/system-config))))
+  (reset! system (ig/init (frz/system-config)))
+  (migrate/run-migrations!))
 
 (defn halt []
   (ig/halt! @system))

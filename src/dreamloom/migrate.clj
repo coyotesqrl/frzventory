@@ -10,7 +10,13 @@
            (java.util.regex Pattern)))
 
 (def migrations-path "dreamloom/migrations/")
+(def migrations-ns-root "dreamloom.migrations.")
 (def migration-file-pattern #"^(\d{14})\.clj")
+
+;; TODO Don't use eval for this
+(defn- run-migration [n]
+  (let [run-cmd (str "(" migrations-ns-root n "/run)")]
+    (eval (read-string run-cmd))))
 
 (defn jar-file [^URL url]
   (some-> url
@@ -79,22 +85,16 @@
 (defn- last-migration! [ns-name]
   (xt/submit-tx @node [[::xt/put {:xt/id :migration :ns-name ns-name}]]))
 
-(defn- run-migrations! []
+(defn run-migrations! []
   (let [last-run        (last-migration)
         migrations      (->> (find-migrations)
                              (filter #(> (compare % last-run) 0))
                              (sort))
         final-migration (last migrations)]
     (doseq [migration migrations]
-      (load (str "/" migrations-path migration)))
+      (log/infof "Running migration %s" migration)
+      (load (str "/" migrations-path migration))
+      (run-migration migration))
     (when final-migration
-      (last-migration! final-migration))))
-
-(comment
-  (xt/submit-tx @node [[::xt/evict :migration]])
-  (last-migration)
-  (run-migrations!)
-
-  (xt/q (xt/db @node)
-        '{:find [(pull ?x [*])]
-          :where [[?x :category "beef"]]}))
+      (last-migration! final-migration))
+    (log/info "Migrations complete")))

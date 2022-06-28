@@ -16,7 +16,6 @@
   (:import (org.eclipse.jetty.server Server)))
 
 (def session-atom (atom {}))
-(def saver (atom {}))
 
 (defroutes app-route-def
   (GET "/" []
@@ -52,10 +51,6 @@
     {:status 200
      :headers {"content-type" "application/json"}
      :body (json/write-str (core/remove-item category item (Integer/parseInt cnt)))})
-  (POST "/save" []
-    {:status 200
-     :headers {"content-type" "application/json"}
-     :body (json/write-str (@saver))})
 
   (route/not-found "<h1><a href=\"/\">go back</a></h1>"))
 
@@ -101,9 +96,7 @@
   (route/not-found "<h1>Page not Found!</h1>"))
 
 (defmethod ig/init-key ::config
-  [_ {{:keys [port]} :server
-      {:keys [save-fn]} :save-fn}]
-  (reset! saver save-fn)
+  [_ {{:keys [port]} :server}]
   (let [server (delay (jt/run-jetty #'all {:port port :join? false}))]
     (log/infof "Starting server on port %d" port)
     (.start ^Server @server)

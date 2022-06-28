@@ -13,23 +13,25 @@
   <h2>Freezer Inventory</h2>
   <hr/>
 
-  <table class="border large-text">
+  <table class="border large-text" role="presentation">
     <thead>
     <tr>
       <th style="text-align: left">Category</th>
-      <th style="text-align: right">Count</th>
+      <th style="text-align: right">Items</th>
+      <th style="text-align: right">Total Count</th>
       <th style="text-align: right">Delete</th>
     </tr>
     </thead>
     <tbody>
-    {% for item in items %}
+    {% for ctg, item-count, total-count, in items %}
     <tr>
-      <td style="text-align: left"><a href="/category/{{item.name|name}}">{{item.name|name}}</a>
+      <td style="text-align: left"><a href="/category/{{ctg}}">{{ctg}}</a>
       </td>
-      <td style="text-align: right">{{item.count}}</td>
+      <td style="text-align: right">{{item-count}}</td>
+      <td style="text-align: right">{{total-count}}</td>
       <td style="text-align: right">
-        {% if 0 = item.count %}
-        <button class="none large-text" onclick="removeEmptyCategory('{{item.name|name}}')">Remove Empty Category</button>
+        {% if 0 = item-count %}
+        <button class="none large-text" onclick="removeEmptyCategory('{{ctg}}')">Remove Empty Category</button>
         {% endif %}
       </td>
     </tr>

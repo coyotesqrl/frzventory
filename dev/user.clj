@@ -20,7 +20,13 @@
    (let [timestamp (-> timestamp (t/in "UTC") (t/date-time))
          ns-name   (t/format migration-format timestamp)]
      (spit (str "src/dreamloom/migrations/" ns-name ".clj")
-           (format "(ns dreamloom.migrations.%s%n\t(:require [xtdb.api :as xt]%n[dreamloom.xtdb :refer [node]]))", ns-name)))))
+           (format "
+           (ns dreamloom.migrations.%s
+           \t(:require [xtdb.api :as xt]
+           \t[dreamloom.migrate :as migrate]
+           [dreamloom.xtdb :refer [node]]))
+
+           (defmethod migrate/run-migration ::run [_])", ns-name)))))
 
 (def system (atom nil))
 

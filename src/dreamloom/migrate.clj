@@ -10,13 +10,11 @@
            (java.util.regex Pattern)))
 
 (def migrations-path "dreamloom/migrations/")
-(def migrations-ns-root "dreamloom.migrations.")
 (def migration-file-pattern #"^(\d{14})\.clj")
 
-;; TODO Don't use eval for this
-(defn- run-migration [n]
-  (let [run-cmd (str "(" migrations-ns-root n "/run)")]
-    (eval (read-string run-cmd))))
+(defmulti run-migration
+  (fn [arg-key]
+    (keyword (str "dreamloom.migrations." arg-key) "run")))
 
 (defn jar-file [^URL url]
   (some-> url

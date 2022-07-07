@@ -16,14 +16,12 @@
        defaults/api-defaults)))
 
 (defn- logged-in? [req]
-  (tap> {:logged-in? (auth/validate (get-in req [:session :jwt]))})
   (auth/validate (get-in req [:session :jwt])))
 
 (defn wrap-authenticate
   ([handler] (wrap-authenticate handler {}))
   ([handler _]
    (fn [{:keys [uri] :as req}]
-     (tap> {:req req :uri uri :session (:session req)})
      (if (or (logged-in? req)
              (str/starts-with? uri "/login")
              (str/starts-with? uri "/v1/login"))

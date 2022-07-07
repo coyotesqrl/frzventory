@@ -41,6 +41,10 @@
       (log/warnf "Login failure by %s" username))
     (assoc-in (response/redirect "/") [:session :jwt] jwt)))
 
+(defn logout []
+  (assoc (response/redirect "/login")
+         :session nil))
+
 (defn validate [token]
   (when token
     (let [{:keys [user expires-seconds]} (jwt/unsign token @jwt-secret)]

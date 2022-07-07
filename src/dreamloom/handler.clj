@@ -63,6 +63,8 @@
     {:status 200
      :headers {"content-type" "text/html"}
      :body (core/login)})
+  (GET "/logout" []
+    (auth/logout))
   (GET "/category/:category" [category]
     {:status 200
      :headers {"content-type" "text/html"}

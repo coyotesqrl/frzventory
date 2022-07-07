@@ -9,7 +9,7 @@
 (def migration-format (t/formatter "yyyyMMddHHmmss"))
 
 (defn portal
-  ([] (portal nil))
+  ([] (portal :intellij))
   ([l]
    (add-tap #'portal.api/submit)
    (p/open {:launcher l})))

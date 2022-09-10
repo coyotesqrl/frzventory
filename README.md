@@ -1,6 +1,6 @@
 # dreamloom/frzventory
 
-FIXME: this is a meaningless change
+FIXME: this is another meaningless change
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # dreamloom/frzventory
 
-FIXME: my new application.
+FIXME: this is a meaningless change
 
 ## Installation
 

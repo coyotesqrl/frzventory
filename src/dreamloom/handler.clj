@@ -3,6 +3,7 @@
             [dreamloom.auth :as auth]
             [dreamloom.middleware :as middleware]
 
+            [dreamloom.nrepl]
             [dreamloom.xtdb]
 
             [clojure.tools.logging :as log]

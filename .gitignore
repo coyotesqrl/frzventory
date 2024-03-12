@@ -31,3 +31,4 @@
 /logs/
 /data/secrets.edn
 /data/xtdb/
+/projectFilesBackup/.idea/workspace.xml

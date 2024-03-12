@@ -8,7 +8,7 @@ Restart=always
 RestartSec=1
 User=ec2-user
 WorkingDirectory=/home/ec2-user/apps/frzventory
-ExecStart=/usr/bin/java -jar frzventory-0.1.0-SNAPSHOT.jar
+ExecStart=/usr/bin/java -jar frzventory-standalone.jar
 
 [Install]
 WantedBy=multi-user.target

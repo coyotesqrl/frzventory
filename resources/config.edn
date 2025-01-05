@@ -18,8 +18,7 @@
                                                                                     :db-dir      "data/xtdb/tx-log"}}}
 
                                          :prod    {:xtdb.jdbc/connection-pool {:dialect   {:xtdb/module xtdb.jdbc.mysql/->dialect}
-                                                                               :pool-opts {:maximumPoolSize #or [#env MYSQL_POOL_SIZE 10]
-                                                                                           :minimumIdle 0}
+                                                                               :pool-opts {:maximumPoolSize #or [#env MYSQL_POOL_SIZE 10]}
                                                                                :db-spec   {:host     #ref [:dreamloom.frzventory/secrets :mysql-host]
                                                                                            :dbname   "frzventory"
                                                                                            :user     "frzventory"
@@ -29,5 +28,4 @@
                                                    :xtdb/document-store       {:xtdb/module     xtdb.jdbc/->document-store
                                                                                :connection-pool :xtdb.jdbc/connection-pool}
                                                    :xtdb/tx-log               {:xtdb/module         xtdb.jdbc/->tx-log
-                                                                               :connection-pool     :xtdb.jdbc/connection-pool
-                                                                               :poll-sleep-duration "PT24H"}}}}
+                                                                               :connection-pool     :xtdb.jdbc/connection-pool}}}}

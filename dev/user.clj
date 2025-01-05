@@ -1,18 +1,11 @@
 (ns user
-  (:require [portal.api :as p]
-            [integrant.core :as ig]
+  (:require [integrant.core :as ig]
             [tick.core :as t]
             [dreamloom.handler]
             [dreamloom.frzventory :as frz]
             [dreamloom.migrate :as migrate]))
 
 (def migration-format (t/formatter "yyyyMMddHHmmss"))
-
-(defn portal
-  ([] (portal :intellij))
-  ([l]
-   (add-tap #'portal.api/submit)
-   (p/open {:launcher l})))
 
 (defn create-migration
   ([] (create-migration (t/instant)))
